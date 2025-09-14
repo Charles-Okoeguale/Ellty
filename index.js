@@ -1,3 +1,27 @@
+function createPageCheckbox(pageNumber) {
+    return `
+        <div class="checkbox-item">
+            <label class="checkbox-label" for="page-${pageNumber}">Page ${pageNumber}</label>
+            <div class="checkbox-wrapper">
+                <input type="checkbox" id="page-${pageNumber}" class="checkbox-input">
+                <div class="checkbox-custom">
+                    <div class="checkmark">
+                        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 8L6.5 12L14 4" stroke="#2469F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+
+const pagesScrollDiv = document.querySelector('.pages-scroll');
+for (let i = 1; i <= 6; i++) {
+    pagesScrollDiv.innerHTML += createPageCheckbox(i);
+}
+
 const allPagesCheckbox = document.getElementById('all-pages');
 const pageCheckboxes = [
     document.getElementById('page-1'),
