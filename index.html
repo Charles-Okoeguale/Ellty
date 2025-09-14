@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Selector Component</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            font-weight: 400;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .page-selector-card {
+            border-radius: 12px;
+            padding: 19px;
+            width: 64%;
+            max-width: 370px;
+            box-shadow: 0px 8px 15px 0px rgba(20, 20, 20, 0.12), 
+                        0px 0px 4px 0px rgba(20, 20, 20, 0.10);
+            min-height: 326px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 26px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 5px;
+        }
+
+        .checkbox-item.divider::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: -7px;
+            right: -10px;
+            height: 0.7px;
+            width: calc(100% + 16px);
+            background-color: #e5e5e5;
+        }
+
+        .checkbox-label {
+            font-size: 19px;
+            color: #1a1a1a;
+            font-weight: 400;
+            cursor: pointer;
+            user-select: none;
+            flex-grow: 1;
+            font-size: 14px;
+        }
+
+        .checkbox-wrapper {
+            position: relative;
+            width: 23px;
+            height: 23px;
+        }
+
+        .checkbox-input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .checkbox-custom {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 23px;
+            height: 23px;
+            background-color: white;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkmark {
+            display: none;
+            width: 18px;
+            height: 18px;
+            position: relative;
+        }
+
+        .checkmark svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .checkbox-item:nth-child(1) .checkbox-input:hover ~ .checkbox-custom,
+        .checkbox-item:nth-child(3) .checkbox-input:hover ~ .checkbox-custom,
+        .checkbox-item:nth-child(5) .checkbox-input:hover ~ .checkbox-custom {
+            background-color: #5087F8;
+            border-color: #5087F8;
+        }
+
+        .checkbox-item:nth-child(1) .checkbox-input:hover ~ .checkbox-custom .checkmark,
+        .checkbox-item:nth-child(3) .checkbox-input:hover ~ .checkbox-custom .checkmark,
+        .checkbox-item:nth-child(5) .checkbox-input:hover ~ .checkbox-custom .checkmark {
+            display: block;
+        }
+
+        .checkbox-item:nth-child(1) .checkbox-input:hover ~ .checkbox-custom .checkmark svg path,
+        .checkbox-item:nth-child(3) .checkbox-input:hover ~ .checkbox-custom .checkmark svg path,
+        .checkbox-item:nth-child(5) .checkbox-input:hover ~ .checkbox-custom .checkmark svg path {
+            stroke: white;
+        }
+
+        .checkbox-input:checked ~ .checkbox-custom {
+            background-color: #2469F6;
+            border-color: #2469F6;
+        }
+
+        .checkbox-input:checked ~ .checkbox-custom .checkmark {
+            display: block;
+        }
+
+        .checkbox-input:checked ~ .checkbox-custom .checkmark svg path {
+            stroke: white;
+        }
+
+        .checkmark svg path {
+            stroke-width: 1;
+        }
+
+        .done-button {
+            width: 103%;
+            height: 40px;
+            background-color: #FACC15;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-left: -5px;
+            font-weight: 400;
+            font-family: 'Montserrat', sans-serif;
+            color: #1a1a1a;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .done-button:hover {
+            background-color: #FFD84D;
+        }
+
+        hr {
+            width: 342px;
+            height: 0px;
+            border: none;
+            border-top: 0.7px solid #CDCDCD;
+            opacity: 1;
+            margin-left: -5px;
+        }
+
+        .pages-scroll {
+            height: 160px;
+            overflow-y: scroll;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            background-color: transparent;
+            margin-top: 13px;
+            margin-bottom: -23px;
+        }
+
+        .pages-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .pages-scroll .checkbox-item {
+            margin-bottom: 17px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-selector-card">
+        <div class="checkbox-group">
+            <div class="checkbox-item divider">
+                <label class="checkbox-label" for="all-pages">All pages</label>
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="all-pages" class="checkbox-input" checked>
+                    <div class="checkbox-custom">
+                        <div class="checkmark">
+                            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 8L6.5 12L14 4" stroke="#2469F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pages-scroll">
+                <div class="checkbox-item">
+                    <label class="checkbox-label" for="page-1">Page 1</label>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="page-1" class="checkbox-input" checked>
+                        <div class="checkbox-custom">
+                            <div class="checkmark">
+                                <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2 8L6.5 12L14 4" stroke="#2469F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkbox-item">
+                    <label class="checkbox-label" for="page-2">Page 2</label>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="page-2" class="checkbox-input" checked>
+                        <div class="checkbox-custom">
+                            <div class="checkmark">
+                                <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2 8L6.5 12L14 4" stroke="#2469F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkbox-item">
+                    <label class="checkbox-label" for="page-3">Page 3</label>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="page-3" class="checkbox-input" checked>
+                        <div class="checkbox-custom">
+                            <div class="checkmark">
+                                <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2 8L6.5 12L14 4" stroke="#2469F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkbox-item">
+                    <label class="checkbox-label" for="page-4">Page 4</label>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="page-4" class="checkbox-input" checked>
+                        <div class="checkbox-custom">
+                            <div class="checkmark">
+                                <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2 8L6.5 12L14 4" stroke="#2469F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkbox-item">
+                    <label class="checkbox-label" for="page-5">Page 5</label>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="page-5" class="checkbox-input" checked>
+                        <div class="checkbox-custom">
+                            <div class="checkmark">
+                                <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2 8L6.5 12L14 4" stroke="#2469F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkbox-item">
+                    <label class="checkbox-label" for="page-6">Page 6</label>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="page-6" class="checkbox-input" checked>
+                        <div class="checkbox-custom">
+                            <div class="checkmark">
+                                <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2 8L6.5 12L14 4" stroke="#2469F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+        </div>
+
+        <button class="done-button">Done</button>
+    </div>
+
+    <script>
+        const allPagesCheckbox = document.getElementById('all-pages');
+        const pageCheckboxes = [
+            document.getElementById('page-1'),
+            document.getElementById('page-2'),
+            document.getElementById('page-3'),
+            document.getElementById('page-4'),
+            document.getElementById('page-5'),
+            document.getElementById('page-6')
+        ];
+
+    
+        allPagesCheckbox.addEventListener('change', function() {
+            pageCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+
+        pageCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const allChecked = pageCheckboxes.every(cb => cb.checked);
+                const someChecked = pageCheckboxes.some(cb => cb.checked);
+
+                allPagesCheckbox.checked = allChecked;
+                allPagesCheckbox.indeterminate = !allChecked && someChecked;
+            });
+        });
+
+
+        document.querySelectorAll('.checkbox-label').forEach(label => {
+            label.addEventListener('click', function(e) {
+                e.preventDefault();
+                const checkboxId = this.getAttribute('for');
+                const checkbox = document.getElementById(checkboxId);
+                checkbox.checked = !checkbox.checked;
+                checkbox.dispatchEvent(new Event('change'));
+            });
+        });
+
+
+        document.querySelector('.done-button').addEventListener('click', function() {
+            const selectedPages = [];
+            if (allPagesCheckbox.checked) {
+                selectedPages.push('All pages');
+            } else {
+                pageCheckboxes.forEach((checkbox, index) => {
+                    if (checkbox.checked) {
+                        selectedPages.push(`Page ${index + 1}`);
+                    }
+                });
+            }
+            console.log('Selected pages:', selectedPages);
+        });
+    </script>
+</body>
+</html>
